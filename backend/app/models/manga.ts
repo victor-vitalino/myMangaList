@@ -37,10 +37,10 @@ export default class Manga extends BaseModel {
   declare coverImg: string
 
   @column({ columnName: 'category_id' })
-  declare categoryId: string
+  declare categoryId: number
 
   @column({ columnName: 'user_id' })
-  declare userId: string
+  declare userId: number
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
