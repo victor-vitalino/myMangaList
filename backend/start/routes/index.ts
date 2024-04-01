@@ -9,3 +9,4 @@
 
 
 import './auth.js'
+import './categories.js'
