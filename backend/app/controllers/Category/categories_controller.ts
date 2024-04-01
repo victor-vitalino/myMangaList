@@ -8,7 +8,7 @@ export default class CategoriesController {
    */
   async index({ auth }: HttpContext) {
     const user = await auth.getUserOrFail()
-    const categories = await Category.query().where('user_id', user.id).orderBy('name','asc')
+    const categories = await Category.query().where('user_id', user.id).orderBy('name', 'asc')
     return categories
   }
 
@@ -29,15 +29,54 @@ export default class CategoriesController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params, auth, response }: HttpContext) {
+    const user = await auth.getUserOrFail()
+    const category = await Category.findByOrFail('id', params.id)
+    if (user.id !== category.userId) {
+      return response
+        .status(401)
+        .json({ errors: [{ message: 'This category ins`t you property' }] })
+    }
+    return category
+  }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {}
+  async update({ params, request, auth, response }: HttpContext) {
+    const user = await auth.getUserOrFail()
+    const { name } = await request.validateUsing(createCategoryValidator)
+
+    const category = await Category.findByOrFail('id', params.id)
+
+    if (user.id !== category.userId) {
+      return response
+        .status(401)
+        .json({ errors: [{ message: 'This category ins`t you property' }] })
+    }
+    if (category.name != name.toUpperCase()) {
+      category.name = name.toUpperCase()
+      await category.save()
+    }
+    return category
+  }
 
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ params,  auth, response }: HttpContext) {
+    const user = await auth.getUserOrFail()
+
+    const category = await Category.findByOrFail('id', params.id)
+
+    if (user.id !== category.userId) {
+      return response
+        .status(401)
+        .json({ errors: [{ message: 'This category ins`t you property' }] })
+    }
+
+    await category.delete()
+
+    return { message: `Category ${category.name} is deleted!` }
+  }
 }

@@ -1,5 +1,4 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
-import CategoriesController from '../../app/controllers/Category/categories_controller.js'
 import Category from '../../app/models/category.js'
 
 export default class extends BaseSeeder {

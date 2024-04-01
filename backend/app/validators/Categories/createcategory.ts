@@ -2,6 +2,6 @@ import vine from '@vinejs/vine'
 
 export const createCategoryValidator = vine.compile(
   vine.object({
-    name: vine.string().trim().minLength(6),
+    name: vine.string().trim().minLength(4),
   })
 )
